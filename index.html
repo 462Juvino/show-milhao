@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta charset="UTF-8">
+    <title>Show do Milhão - TikTok Live</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-view" style="display: contents;">
+
+        <div id="overlay">CLIQUE AQUI PARA INICIAR A TELA<br><span style="font-size: 18px; color: #aaa;">(Obrigatório para ativar Áudio e Narrador)</span></div>
+
+        <div id="podium-screen">
+            <h1 id="podium-title">🏆 PÓDIO DA RODADA 🏆</h1>
+            <div class="podium-container">
+                <div class="podium-place p2" id="podium-2"><img src="" class="podium-avatar"><div class="podium-name">...</div><div class="podium-pts">0</div><div class="podium-box">2</div></div>
+                <div class="podium-place p1" id="podium-1"><img src="" class="podium-avatar"><div class="podium-name">...</div><div class="podium-pts">0</div><div class="podium-box">1</div></div>
+                <div class="podium-place p3" id="podium-3"><img src="" class="podium-avatar"><div class="podium-name">...</div><div class="podium-pts">0</div><div class="podium-box">3</div></div>
+            </div>
+        </div>
+
+        <div id="round-winner-screen">
+            <img id="rw-avatar" src="" class="rw-avatar" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\\'http://www.w3.org/2000/svg\\\' viewBox=\\\'0 0 100 100\\\'><circle cx=\\\'50\\\' cy=\\\'50\\\' r=\\\'50\\\' fill=\\\'#555\\\'/><text x=\\\'50\\\' y=\\\'65\\\' font-size=\\\'50\\\' text-anchor=\\\'middle\\\' fill=\\\'#fff\\\'>👤</text></svg>'">
+            <div id="rw-title" class="rw-title">CERTA RESPOSTA!</div>
+            <div id="rw-name" class="rw-name">Nome do Jogador</div>
+            <div id="rw-method" class="rw-method">Método</div>
+        </div>
+
+        <div id="game-area">
+            <div id="info-bar">Aguardando Host...</div>
+            <div id="timer-container"><div id="timer-bar"></div></div>
+            <div id="question-box">Carregando perguntas...</div>
+            <div id="alternatives">
+                <div class="alt-box" id="box-a"><span class="alt-text" id="text-a">...</span></div>
+                <div class="alt-box" id="box-b"><span class="alt-text" id="text-b">...</span></div>
+                <div class="alt-box" id="box-c"><span class="alt-text" id="text-c">...</span></div>
+                <div class="alt-box" id="box-d"><span class="alt-text" id="text-d">...</span></div>
+            </div>
+            <div id="sabotage-banner">
+                <span style="color:#ffea00">💬 ESCREVA A RESPOSTA NO CHAT!</span> (Envie Mimos para ter prioridade!)
+            </div>
+        </div>
+
+        <div id="host-controls">
+            <span id="current-leader" style="color: #aaa; font-size: 14px;">Aguardando respostas no chat...</span>
+            <button id="btn-action" onclick="hostAction()" disabled style="opacity:0.5">Lançar Pergunta</button>
+        </div>
+
+        <div id="ranking-area">
+            <div id="page-pts" class="rank-page active-page"><h2>🏆 TOP 10 PONTOS GERAIS</h2><div id="ranking-pts-list"></div></div>
+            <div id="page-round-gifts" class="rank-page"><h2>🎁 TOP DA PERGUNTA (MOEDAS)</h2><div id="ranking-round-gifts-list"></div></div>
+            <div id="page-gifts" class="rank-page"><h2>💎 TOP 10 DOADORES (LIVE)</h2><div id="ranking-gifts-list"></div></div>
+        </div>
+
+        <button class="btn-panel" onclick="document.getElementById('hud-janela-painel').style.display='flex'">🎛️ Painel de Regras</button>
+
+        <audio id="bgMusic" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3"></audio>
+        <audio id="snd-correct" src="https://actions.google.com/sounds/v1/cartoon/cartoon_success_fanfare.ogg"></audio>
+        <audio id="snd-wrong" src="https://actions.google.com/sounds/v1/cartoon/cartoon_fail_string.ogg"></audio>
+        <audio id="snd-bid" src="https://actions.google.com/sounds/v1/magic/magic_chime.ogg"></audio>
+    </div>
+
+    <div id="hud-janela-painel" style="position: absolute; top: 60px; left: 15px; width: calc(100vw - 30px); max-width: 450px; height: 85vh; background: rgba(13, 17, 23, 0.95); border: 2px solid #d4af37; border-radius: 10px; z-index: 200000; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 0 20px rgba(0,0,0,0.8);">
+        <div style="background: linear-gradient(90deg, #d4af37, #aa7f00); padding: 10px; font-weight: bold; color: black; display: flex; justify-content: space-between; align-items: center;">
+            <span>🎛️ Painel do Host</span>
+            <div style="display: flex; gap: 5px;">
+                <button onclick="window.open('painel.html?u=' + (window.rdmUser || localStorage.getItem('rdm_user') || 'visitante') + '&p=' + (window.rdmPerfil || localStorage.getItem('rdm_perfil') || 'pro'), '_blank'); document.getElementById('hud-janela-painel').style.display='none';" style="background: #2c3e50; border: none; color: white; padding: 5px 10px; cursor: pointer; border-radius: 5px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">↗️ Abrir Aba</button>
+                <button onclick="document.getElementById('hud-janela-painel').style.display='none'" style="background: #ff4757; border: none; color: white; padding: 5px 15px; cursor: pointer; border-radius: 5px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">X Fechar</button>
+            </div>
+        </div>
+        <iframe src="painel.html" style="width: 100%; height: 100%; border: none;"></iframe>
+    </div>
+
+    <script src="script.js"></script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyB2LNWktWEwYLuZxwr8oc9NpcjFz3GU5qc", authDomain: "authrdm-a82a6.firebaseapp.com", databaseURL: "https://authrdm-a82a6-default-rtdb.firebaseio.com", projectId: "authrdm-a82a6" };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // A MÁGICA DO BOMBA: Captura a URL diretamente no motor Firebase para garantir o OBS isolado
+        const urlParams = new URLSearchParams(window.location.search);
+        let rawUser = urlParams.get('u') || window.rdmUser || localStorage.getItem('rdm_user') || "visitante";
+        const safeUser = rawUser.replace(/[\.\#\$\[\]]/g, "_");
+
+        setTimeout(() => {
+            // Escuta as configurações da nuvem e joga pro LocalStorage
+            onValue(ref(db, `usuarios/${safeUser}/controle_remoto/show_config`), (snapshot) => {
+                if(snapshot.exists()) {
+                    localStorage.setItem('tiktok_game_settings', JSON.stringify(snapshot.val()));
+                }
+            });
+
+            // Escuta o Banco de Perguntas vindo da Nuvem
+            onValue(ref(db, `usuarios/${safeUser}/controle_remoto/show_questions`), (snapshot) => {
+                if(snapshot.exists()) {
+                    let parsed = snapshot.val();
+                    localStorage.setItem('custom_questions', JSON.stringify(parsed));
+                    if(typeof window.aplicarNovasPerguntas === 'function') {
+                        window.aplicarNovasPerguntas(parsed);
+                    }
+                }
+            });
+
+            // Escuta os Comandos dos botões remotos (Lançar/Zerar)
+            onValue(ref(db, `usuarios/${safeUser}/controle_remoto/show_comando`), (snapshot) => {
+                if(snapshot.exists()) {
+                    localStorage.setItem('show_command', JSON.stringify(snapshot.val()));
+                }
+            });
+        }, 1500);
+    </script>
+</body>
+</html>

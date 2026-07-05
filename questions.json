@@ -1,0 +1,22 @@
+[
+  {"q":"Qual filme de 2025 apresenta um herói que viaja entre memórias para salvar o futuro?", "a":"Memória em Chamas", "b":"Entre Mundos: O Legado", "c":"Chrono Salvadores", "d":"Luz do Amanhã", "correct":"b"},
+  {"q":"Qual animação de 2024 foi premiada pelo uso inovador de captura de movimento em personagens animais?", "a":"Bosque Lunar", "b":"A Cidade dos Brinquedos", "c":"Vidas Entrelaçadas", "d":"Maré de Sonhos", "correct":"a"},
+  {"q":"Charada: O que tem boca, mas não fala; corre, mas não anda?", "a":"O rio", "b":"O vento", "c":"O relógio", "d":"A sombra", "correct":"a"},
+  {"q":"Qual filme de 2025 se passa principalmente dentro de uma estação espacial comercial?", "a":"Estação Aurora", "b":"Horizonte de Aço", "c":"Orbitais", "d":"Último Voo", "correct":"c"},
+  {"q":"Qual desenho atual foca em um grupo de crianças que viaja por mundos de videogame?", "a":"Pixel Explorers", "b":"Aventuras na Vila", "c":"Guardas do Vale", "d":"As Crônicas de Lino", "correct":"a"},
+  {"q":"Charada: Sempre na sua frente, nunca alcançada. O que é?", "a":"O amanhã", "b":"Seu reflexo", "c":"A estrada", "d":"O horizonte", "correct":"a"},
+  {"q":"Qual filme de 2024 mistura fantasia e política em um reino dividido por magia?", "a":"Coroa de Cinzas", "b":"Sombra Real", "c":"Reinos Partidos", "d":"O Juramento da Rainha", "correct":"b"},
+  {"q":"Qual série animada de 2025 é conhecida por misturar jazz e aventura urbana?", "a":"Noites de Neon", "b":"Ritmo da Rua", "c":"Jazz & Coisas", "d":"Cidade em Sol Maior", "correct":"a"},
+  {"q":"Charada: Cai em pé e corre deitado; o que é?", "a":"A chuva", "b":"O rio", "c":"A folha", "d":"O carro", "correct":"a"},
+  {"q":"Qual filme recente apresenta uma investigação sobre IA que ganha consciência em 2040?", "a":"Código Sentido", "b":"Consciência Sintética", "c":"Além do Algoritmo", "d":"Vigilância", "correct":"c"},
+  {"q":"Qual animação de 2023 recebeu elogios por representar culturas indígenas no enredo?", "a":"Caminhos Ancestrais", "b":"Coração da Floresta", "c":"O Grande Circo", "d":"Estrelas do Norte", "correct":"b"},
+  {"q":"Charada: Tenho cidades, mas sem casas; florestas, mas sem árvores; e água, mas sem peixes. O que sou?", "a":"Um mapa", "b":"Um livro", "c":"Um sonho", "d":"Um quadro", "correct":"a"},
+  {"q":"Qual filme de suspense de 2025 se passa durante um blackout global?", "a":"Noite Sem Luz", "b":"Escuridão Total", "c":"Apagão", "d":"As Horas Vagas", "correct":"c"},
+  {"q":"Qual desenho atual tem como protagonistas dois gatos detetives que resolvem mistérios na cidade?", "a":"Gatos & Mistérios", "b":"Detetives Felinos", "c":"Peludos em Ação", "d":"No Rastro do Rabo", "correct":"b"},
+  {"q":"Charada: O que quanto mais se tira, maior fica?", "a":"O buraco", "b":"A pilha", "c":"O segredo", "d":"O fogo", "correct":"a"},
+  {"q":"Qual filme de 2024 é uma comédia romântica ambientada em festivais de música internacionais?", "a":"Amor em Palco", "b":"Notas do Coração", "c":"Entre Acordes", "d":"Festival de Nós Dois", "correct":"c"},
+  {"q":"Qual animação recente aborda amizade entre uma criança humana e um robô jardineiro?", "a":"O Jardim do Robo", "b":"Raízes de Aço", "c":"Flor de Metal", "d":"Sementes do Amanhã", "correct":"b"},
+  {"q":"Charada: Quanto mais você tira, mais eu fico. O que sou?", "a":"Um passo", "b":"Um buraco", "c":"A cabeça", "d":"O tempo", "correct":"b"},
+  {"q":"Qual filme de 2025 combina elementos de terror e folclore urbano brasileiro?", "a":"Noite da Mandioca", "b":"Lendas na Cidade", "c":"Sussurros do Ribeirão", "d":"A Folha Vermelha", "correct":"c"},
+  {"q":"Qual desenho atual apresenta uma academia para jovens super-habilidosos em realidades aumentadas?", "a":"Academia Holo", "b":"Virtuosos", "c":"Níveis Altos", "d":"Treinamento 5D", "correct":"a"}
+]

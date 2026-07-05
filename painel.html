@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel do Host</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap');
+        body { background: #111; color: #fff; padding: 20px; font-family: 'Montserrat', sans-serif; display: flex; flex-direction: column; align-items: center; margin: 0; overflow-y: auto; overflow-x: hidden;}
+        .hp-group { margin-bottom: 15px; width: 100%; max-width: 350px; }
+        .hp-group label { display: block; font-size: 12px; color: #aaa; margin-bottom: 5px; text-transform: uppercase;}
+        .hp-group input, .hp-group select { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #555; background: #222; color: #0f0; font-weight: bold; box-sizing: border-box; cursor: pointer; font-family: 'Montserrat', sans-serif;}
+        .hp-check-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 5px; border: 1px solid #333;}
+        .hp-check-row input[type="checkbox"] { width: auto; transform: scale(1.3); margin-left: 5px; cursor: pointer;}
+        .hp-check-row label { margin: 0; flex: 1; font-size: 13px; color: #fff; font-weight: bold;}
+        .hp-check-row input[type="number"] { width: 70px; padding: 5px; font-size: 14px; }
+        button { width: 100%; max-width: 350px; margin-top: 10px; background: linear-gradient(180deg, #00c853, #00838f); color: white; font-size: 16px; padding: 12px; border-radius:8px; border:none; cursor:pointer; font-weight:bold; transition: 0.2s;}
+        button:hover { filter: brightness(1.2); transform: scale(1.02); }
+        #hp-msg { color:#0f0; margin-top:10px; display:none; font-weight: bold; text-align: center; }
+        fieldset { border: 1px solid #444; border-radius: 8px; padding: 15px; width: 100%; max-width: 350px; box-sizing: border-box; margin-bottom: 15px; background: rgba(0,0,0,0.4); }
+        legend { color: #f39c12; font-weight: bold; font-size: 12px; padding: 0 5px; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+    <h2 style="color:#d4af37; margin-bottom: 5px; text-align: center;">🎮 Painel de Controle</h2>
+
+    <div id="conexao-status" style="background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; margin-bottom: 15px; text-align: center; border: 1px solid #555;">
+        <span style="font-size: 11px; color: #aaa;">Conectado na Nuvem como:</span><br>
+        <strong id="user-conectado" style="font-size: 16px; color: #ff4757;">Carregando...</strong>
+    </div>
+
+    <fieldset style="border-color: #d4af37;">
+        <legend style="color: #d4af37;">🕹️ Controles da Live</legend>
+        <button onclick="enviarComando('acao_principal')" style="background: linear-gradient(180deg,#d4af37,#8b6914); color: black; margin-top: 0;">Lançar / Revelar Pergunta</button>
+        <button onclick="enviarComando('zerar_tudo')" style="background: #ff4757; font-size: 14px;">Zerar Todos os Rankings</button>
+    </fieldset>
+
+    <fieldset>
+        <legend>🔗 Link para OBS / TikTok Studio</legend>
+        <p style="font-size: 11px; color: #aaa; margin-top: 0; margin-bottom: 10px;">Cole este link na sua Fonte de Navegador. O áudio/narrador é desativado no OBS automaticamente.</p>
+        <div style="display: flex; gap: 5px;">
+            <input type="text" id="obs-link" readonly style="margin-bottom: 0; color: #f39c12; font-weight: bold; background: #111; flex: 1; font-size: 11px;">
+            <button onclick="copiarLinkOBS()" style="background: #3498db; width: auto; margin-top: 0; padding: 10px;">COPIAR</button>
+        </div>
+    </fieldset>
+
+    <fieldset style="border-color: #00c853;">
+        <legend style="color: #00c853;">📝 Banco de Perguntas</legend>
+        <p style="font-size: 10px; color: #aaa; margin-top: 0; margin-bottom: 10px;">Cole seu JSON gerado por IA aqui e ele irá direto para a Live.</p>
+
+        <div style="background: rgba(0, 200, 83, 0.1); padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid rgba(0, 200, 83, 0.3);">
+            <strong style="color: #00c853; font-size: 11px;">💡 DICA: Use Inteligência Artificial!</strong>
+            <p style="font-size: 10px; color: #ccc; margin: 5px 0;">Copie o texto abaixo e cole no ChatGPT ou Gemini:</p>
+            <code style="display: block; background: rgba(0,0,0,0.6); padding: 8px; color: #d4af37; border-radius: 5px; font-family: monospace; font-size: 10px; user-select: all;">Crie um jogo com 20 perguntas sobre [TEMA]. A resposta deve ser EXATAMENTE um array JSON. Chaves: "q" (pergunta), "a", "b", "c", "d" (alternativas) e "correct" (letra correta em minúsculo). Retorne apenas o código.</code>
+        </div>
+
+        <textarea id="painel-json-input" placeholder='[{"q": "Pergunta?", "a": "A", "b": "B", "c": "C", "d": "D", "correct": "a"}]' style="width: 100%; height: 80px; background: #000; color: #0f0; border: 1px solid #555; border-radius: 5px; padding: 5px; font-family: monospace; font-size: 11px; resize: vertical; box-sizing: border-box;"></textarea>
+        <button onclick="validarEEnviarPerguntas()" style="background: linear-gradient(180deg,#00c853,#00838f); color: white; margin-top: 10px; font-size: 14px;">💾 Salvar na Nuvem</button>
+        <p id="json-error" style="color: #ff5555; font-size: 11px; font-weight: bold; margin-top: 5px; display: none;">❌ Formato JSON Inválido!</p>
+    </fieldset>
+
+    <div class="hp-group"><label>Pts por Tap (Curtida)</label><input type="number" step="0.1" id="hp-tap"></div>
+    <div class="hp-group" style="display:flex; gap:10px;">
+        <div style="flex:1;"><label>Pts Normal</label><input type="number" id="hp-normal"></div>
+        <div style="flex:1;"><label>Pts Bônus</label><input type="number" id="hp-bonus"></div>
+        <div style="flex:1;"><label>Pts Plus</label><input type="number" id="hp-plus"></div>
+    </div>
+
+    <hr style="width:100%; max-width:350px; border:1px solid #333; margin: 15px 0;">
+    <div class="hp-group">
+        <label style="color:#0ff">🌟 Presente Master (Fura-Fila)</label>
+        <input type="text" id="hp-master" placeholder="Ex: leao, coroa, rosa...">
+        <p style="font-size: 10px; color: #888; margin: 2px 0 0 0;">O jogador que mandar este presente ganha a rodada se acertar a pergunta.</p>
+    </div>
+    <hr style="width:100%; max-width:350px; border:1px solid #333; margin: 15px 0;">
+
+    <div class="hp-group">
+        <label style="color:#fff; font-size:14px; margin-bottom:10px;">📊 Controle de Rankings</label>
+        <div class="hp-check-row"><input type="checkbox" id="hp-rank-pts-active"><label>Top 10 Pontos</label><input type="number" id="hp-rank-pts-time" step="0.5"></div>
+        <div class="hp-check-row"><input type="checkbox" id="hp-rank-round-active"><label>Top Da Pergunta</label><input type="number" id="hp-rank-round-time" step="0.5"></div>
+        <div class="hp-check-row"><input type="checkbox" id="hp-rank-live-active"><label>Top 10 Doadores</label><input type="number" id="hp-rank-live-time" step="0.5"></div>
+    </div>
+
+    <button onclick="saveHostSettings()">Aplicar Regras</button>
+    <div id="hp-msg">✅ Regras atualizadas no jogo ao vivo!</div>
+
+    <script>
+        // Captura o usuário se o painel for aberto via Link Direto no Chrome
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('u')) localStorage.setItem('rdm_user', urlParams.get('u'));
+        if (urlParams.has('p')) localStorage.setItem('rdm_perfil', urlParams.get('p'));
+
+        // ACENDE A LUZ DO STATUS NO PAINEL
+        let currentUser = localStorage.getItem('rdm_user') || "visitante";
+        let statusLabel = document.getElementById('user-conectado');
+        if (currentUser === "visitante") {
+            statusLabel.innerText = "Visitante ⚠️";
+            statusLabel.style.color = "#ff4757";
+            statusLabel.innerHTML += "<br><span style='font-size:10px; color:#aaa; font-weight:normal;'>Você abriu o painel pelo arquivo. Feche, vá no jogo e clique em '↗️ Abrir Aba' para sincronizar!</span>";
+        } else {
+            statusLabel.innerText = "@" + currentUser;
+            statusLabel.style.color = "#00e676";
+            document.getElementById('conexao-status').style.borderColor = "#00e676";
+        }
+
+        function normalizeText(text) {
+            if (!text) return "";
+            return text.toString().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
+        }
+
+        let gameSettings = { tapPoints: 0.5, normalPoints: 10, bonusPoints: 50, plusPoints: 100, masterGift: '', rankPtsActive: true, rankPtsTime: 5, rankRoundGiftsActive: true, rankRoundGiftsTime: 7, rankLiveGiftsActive: true, rankLiveGiftsTime: 3.5 };
+
+        let saved = localStorage.getItem('tiktok_game_settings');
+        if(saved) { gameSettings = { ...gameSettings, ...JSON.parse(saved) }; }
+        preencherCampos();
+
+        function preencherCampos() {
+            document.getElementById('hp-tap').value = gameSettings.tapPoints;
+            document.getElementById('hp-normal').value = gameSettings.normalPoints;
+            document.getElementById('hp-bonus').value = gameSettings.bonusPoints;
+            document.getElementById('hp-plus').value = gameSettings.plusPoints;
+            document.getElementById('hp-rank-pts-active').checked = gameSettings.rankPtsActive;
+            document.getElementById('hp-rank-pts-time').value = gameSettings.rankPtsTime;
+            document.getElementById('hp-rank-round-active').checked = gameSettings.rankRoundGiftsActive;
+            document.getElementById('hp-rank-round-time').value = gameSettings.rankRoundGiftsTime;
+            document.getElementById('hp-rank-live-active').checked = gameSettings.rankLiveGiftsActive;
+            document.getElementById('hp-rank-live-time').value = gameSettings.rankLiveGiftsTime;
+            document.getElementById('hp-master').value = gameSettings.masterGift || "";
+        }
+
+        window.saveHostSettings = function() {
+            let newSettings = {
+                tapPoints: parseFloat(document.getElementById('hp-tap').value) || 0,
+                normalPoints: parseInt(document.getElementById('hp-normal').value) || 0,
+                bonusPoints: parseInt(document.getElementById('hp-bonus').value) || 0,
+                plusPoints: parseInt(document.getElementById('hp-plus').value) || 0,
+                masterGift: normalizeText(document.getElementById('hp-master').value),
+                rankPtsActive: document.getElementById('hp-rank-pts-active').checked, rankPtsTime: parseFloat(document.getElementById('hp-rank-pts-time').value) || 5,
+                rankRoundGiftsActive: document.getElementById('hp-rank-round-active').checked, rankRoundGiftsTime: parseFloat(document.getElementById('hp-rank-round-time').value) || 5,
+                rankLiveGiftsActive: document.getElementById('hp-rank-live-active').checked, rankLiveGiftsTime: parseFloat(document.getElementById('hp-rank-live-time').value) || 5
+            };
+
+            localStorage.setItem('tiktok_game_settings', JSON.stringify(newSettings));
+            document.getElementById('hp-msg').style.display = 'block';
+            setTimeout(() => document.getElementById('hp-msg').style.display = 'none', 2500);
+        }
+
+        // A MÁGICA DO BOMBA PARA O LINK DO OBS:
+        function atualizarLinkOBS() {
+            let user = localStorage.getItem('rdm_user') || "visitante";
+            let perfil = localStorage.getItem('rdm_perfil') || "pro";
+            // Agora substitui painel.html diretamente por index.html de forma limpa
+            let baseURL = window.location.href.replace('painel.html', 'index.html').split('?')[0];
+            document.getElementById('obs-link').value = `${baseURL}?u=${user}&p=${perfil}&obs=1`;
+        }
+        setTimeout(atualizarLinkOBS, 500);
+
+        window.copiarLinkOBS = function() {
+            let input = document.getElementById('obs-link');
+            input.select(); document.execCommand("copy");
+            alert("✅ Link copiado! Cole no OBS ou TikTok Live Studio.");
+        }
+
+        window.enviarComando = function(acao) {
+            localStorage.setItem('show_command', JSON.stringify({ action: acao, ts: Date.now() }));
+        }
+
+        window.validarEEnviarPerguntas = function() {
+            let texto = document.getElementById('painel-json-input').value;
+            let err = document.getElementById('json-error');
+            err.style.display = 'none';
+
+            try {
+                let jsonLimpo = texto.replace(/```json/gi, '')
+                                     .replace(/```/g, '')
+                                     .replace(/[\u00A0\u200B-\u200D\uFEFF]/g, ' ')
+                                     .replace(/[\u201C\u201D]/g, '"')
+                                     .trim();
+
+                let match = jsonLimpo.match(/\[[\s\S]*\]/);
+                if (!match) throw new Error("Não encontrei as chaves [ ] do JSON.");
+
+                jsonLimpo = match[0];
+                let parsed = JSON.parse(jsonLimpo);
+
+                if (parsed && !Array.isArray(parsed)) {
+                    if (Array.isArray(parsed.perguntas)) parsed = parsed.perguntas;
+                    else if (Array.isArray(parsed.questions)) parsed = parsed.questions;
+                    else throw new Error("O código não é uma lista válida.");
+                }
+
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    if(window.enviarPerguntasNuvem) window.enviarPerguntasNuvem(parsed);
+                } else {
+                    throw new Error("O banco de perguntas está vazio.");
+                }
+            } catch(e) {
+                err.innerText = "❌ Erro: " + e.message;
+                err.style.display = 'block';
+            }
+        }
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyB2LNWktWEwYLuZxwr8oc9NpcjFz3GU5qc", authDomain: "authrdm-a82a6.firebaseapp.com", databaseURL: "https://authrdm-a82a6-default-rtdb.firebaseio.com", projectId: "authrdm-a82a6" };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        function getSafeUser() {
+            let user = localStorage.getItem('rdm_user') || "visitante";
+            return user.replace(/[\.\#\$\[\]]/g, "_");
+        }
+
+        const originalSalvar = window.saveHostSettings;
+        window.saveHostSettings = function() {
+            originalSalvar();
+            let configStr = localStorage.getItem('tiktok_game_settings');
+            if(configStr) set(ref(db, `usuarios/${getSafeUser()}/controle_remoto/show_config`), JSON.parse(configStr));
+        };
+
+        const originalEnviar = window.enviarComando;
+        window.enviarComando = function(acao) {
+            originalEnviar(acao);
+            set(ref(db, `usuarios/${getSafeUser()}/controle_remoto/show_comando`), { ts: Date.now(), action: acao });
+        };
+
+        window.enviarPerguntasNuvem = function(perguntasArray) {
+            set(ref(db, `usuarios/${getSafeUser()}/controle_remoto/show_questions`), perguntasArray).then(() => {
+                alert("✅ Perguntas enviadas para o jogo com sucesso!");
+                document.getElementById('painel-json-input').value = "";
+            }).catch(err => alert("Erro ao salvar na nuvem: " + err.message));
+        };
+    </script>
+</body>
+</html>
